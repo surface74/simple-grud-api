@@ -4,5 +4,5 @@
   ],
   "ext": ".ts, .js",
   "ignore": [],
-  "exec": "npx tsc && node ./build/index.js"
+  "exec": "node --no-warnings=ExperimentalWarning --loader ts-node/esm src/index.ts"
 }
