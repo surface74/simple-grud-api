@@ -1,7 +1,7 @@
-import { message } from "./modules/test.js";
+import { message } from './modules/test.js';
 
 message(true);
 
-const greeting: string = "Hello world!";
+const greeting: string = 'Hello world!';
 
-console.log("greeting: ", greeting);
+console.log('greeting: ', greeting);
