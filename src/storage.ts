@@ -1,15 +1,19 @@
 import User from './user-types.js';
+import { v4 as getUUID } from 'uuid';
 
 export default class Storage {
-  static instance: Storage = new Storage();
+  private records: User[];
 
-  static Records = new Array<User>();
-
-  private constructor() {
-    if (!Storage.instance) Storage.instance = this;
+  public constructor() {
+    this.records = new Array<User>();
   }
 
-  public static getInstance(): Observer {
-    return Storage.instance;
+  public add(newUser: User): void {
+    const user: User = { ...newUser, id: getUUID() };
+    console.log(`adding user id=${user.id}`);
+  }
+
+  public getAll(): User[] {
+    return [...this.records];
   }
 }

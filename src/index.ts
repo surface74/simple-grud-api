@@ -1,6 +1,6 @@
 import http, { IncomingMessage, ServerResponse } from 'node:http';
 import dotenv from 'dotenv';
-import { getRouter, postRouter, putRouter, deleteRouter } from './router.js';
+import { getRouter, postRouter, putRouter, deleteRouter, pageNotFound } from './router.js';
 
 dotenv.config();
 const port = process.env.PORT ?? 8080;
@@ -25,6 +25,7 @@ server.on('request', (req: IncomingMessage, res: ServerResponse<IncomingMessage>
       deleteRouter(req, res);
       break;
     default:
+      pageNotFound(res);
       break;
   }
   res.end();
