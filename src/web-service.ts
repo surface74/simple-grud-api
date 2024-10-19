@@ -3,6 +3,12 @@ import Storage from './storage.js';
 
 const storage = new Storage();
 
-export function getAll(): User[] {
+function getAll(): User[] {
   return storage.getAll();
 }
+
+function createUser(userData: User): User {
+  return storage.create(userData);
+}
+
+export default { getAll, createUser };

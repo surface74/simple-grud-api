@@ -5,6 +5,7 @@
   "main": "index.js",
   "type": "module",
   "scripts": {
+    "start:debug": "node --inspect --no-warnings=ExperimentalWarning --loader ts-node/esm src/index.ts",
     "dev": "npx nodemon",
     "start": "node --no-warnings=ExperimentalWarning --loader ts-node/esm src/index.ts",
     "build": "tsc",

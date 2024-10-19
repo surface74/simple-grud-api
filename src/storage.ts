@@ -1,3 +1,4 @@
+import { ServerError } from './error.js';
 import User from './user-types.js';
 import { v4 as getUUID } from 'uuid';
 
@@ -8,9 +9,15 @@ export default class Storage {
     this.records = new Array<User>();
   }
 
-  public add(newUser: User): void {
-    const user: User = { ...newUser, id: getUUID() };
-    console.log(`adding user id=${user.id}`);
+  public create(newUser: User): User {
+    try {
+      const user: User = { ...newUser, id: getUUID() };
+      this.records.push(user);
+      return user;
+    } catch (error) {
+      const message = error instanceof Error ? error.message : '';
+      throw new ServerError(message);
+    }
   }
 
   public getAll(): User[] {
