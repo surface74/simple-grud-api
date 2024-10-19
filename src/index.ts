@@ -2,7 +2,7 @@ import http, { IncomingMessage, ServerResponse } from 'node:http';
 import dotenv from 'dotenv';
 import { getRouter, postRouter, putRouter, deleteRouter, pageNotFound } from './router.js';
 import { HttpContent } from './http-content.types.js';
-import { ClientError, ServerError } from './error.js';
+import { ClientError } from './error.js';
 
 dotenv.config();
 const port = process.env.PORT ?? 8080;
@@ -31,12 +31,8 @@ server.on('request', (req: IncomingMessage, res: ServerResponse<IncomingMessage>
         break;
     }
   } catch (error) {
-    if (error instanceof ServerError) {
-      res.writeHead(500, HttpContent.TEXT);
-    } else if (error instanceof ClientError) {
-      res.writeHead(400, HttpContent.TEXT);
-    }
-
+    const statusCode = res.statusCode || error instanceof ClientError ? 400 : 500;
+    res.writeHead(statusCode, HttpContent.TEXT);
     const message = error instanceof Error ? error.message : '';
     console.log(message);
     res.write(message);

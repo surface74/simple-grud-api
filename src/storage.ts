@@ -23,4 +23,8 @@ export default class Storage {
   public getAll(): User[] {
     return [...this.records];
   }
+
+  public getRecord(uuid: string): User | undefined {
+    return this.records.find((user) => user.id === uuid);
+  }
 }

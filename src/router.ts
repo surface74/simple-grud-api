@@ -1,9 +1,11 @@
 import { IncomingMessage, ServerResponse } from 'node:http';
 
+import { validate as isUuidValid } from 'uuid';
+
 import { ApiPath } from './api-path.js';
 import { Message } from './message.js';
 import DataService from './web-service.js';
-import { ServerError, ClientRequestDataError, NotImplementedError } from './error.js';
+import { ServerError, ClientRequestDataError } from './error.js';
 import User from './user-types.js';
 import webService from './web-service.js';
 import { HttpContent } from './http-content.types.js';
@@ -17,8 +19,23 @@ function getRouter(req: IncomingMessage, res: ServerResponse<IncomingMessage>): 
     res.write(JSON.stringify(users));
     res.end();
   } else if (url?.startsWith(ApiPath.GetUser)) {
-    // res.write(`get record for id=${url.slice(ApiPath.GetUser.length)}`);
-    throw new NotImplementedError('get user with specified ID');
+    const uuid = url.slice(ApiPath.GetUser.length);
+    if (!isUuidValid(uuid)) {
+      res.writeHead(400, HttpContent.TEXT);
+      res.write(Message.ClientRequestDataError + ': ' + Message.WrongUUID);
+      res.end();
+      return;
+    }
+    const user = DataService.getRecord(uuid);
+    if (user) {
+      res.writeHead(200, HttpContent.JSON);
+      res.write(JSON.stringify(user));
+      res.end();
+    } else {
+      res.writeHead(404, HttpContent.TEXT);
+      res.write(Message.ClientRequestDataError + ': ' + Message.RecordNotExist);
+      res.end();
+    }
   } else pageNotFound(res);
 }
 
