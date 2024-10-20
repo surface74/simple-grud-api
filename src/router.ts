@@ -4,7 +4,6 @@ import { validate as isUuidValid } from 'uuid';
 
 import { ApiPath } from './api-path.types.js';
 import { Message } from './message.js';
-import DataService from './web-service.js';
 import { ServerError } from './error.js';
 import User from './user.types.js';
 import webService from './web-service.js';
@@ -14,7 +13,7 @@ function getRouter(req: IncomingMessage, res: ServerResponse<IncomingMessage>): 
   const { url } = req;
 
   if (url === ApiPath.GetAll) {
-    const users = DataService.getAll();
+    const users = webService.getAll();
     HttpHelper.writeJSONResponse(res, 200, JSON.stringify(users));
   } else if (url?.startsWith(ApiPath.GetUser)) {
     const uuid = url.slice(ApiPath.GetUser.length);
@@ -22,7 +21,7 @@ function getRouter(req: IncomingMessage, res: ServerResponse<IncomingMessage>): 
       HttpHelper.writeTextResponse(res, 400, Message.WrongUUID);
       return;
     }
-    const user = DataService.getRecord(uuid);
+    const user = webService.getRecord(uuid);
     if (user) {
       HttpHelper.writeJSONResponse(res, 200, JSON.stringify(user));
     } else {
