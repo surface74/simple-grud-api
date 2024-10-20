@@ -1,4 +1,5 @@
 export enum Message {
+  ServerStarted = 'Server started on port',
   PageNotFound = 'We really don`t have such page',
   ServerError = 'ServerError',
   ClientError = 'ClientError',

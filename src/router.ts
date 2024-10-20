@@ -2,41 +2,35 @@ import { IncomingMessage, ServerResponse } from 'node:http';
 
 import { validate as isUuidValid } from 'uuid';
 
-import { ApiPath } from './api-path.js';
+import { ApiPath } from './api-path.types.js';
 import { Message } from './message.js';
 import DataService from './web-service.js';
 import { ServerError } from './error.js';
-import User from './user-types.js';
+import User from './user.types.js';
 import webService from './web-service.js';
-import { HttpContent } from './http-content.types.js';
+import { HttpHelper } from './http-helper.js';
 
 function getRouter(req: IncomingMessage, res: ServerResponse<IncomingMessage>): void {
   const { url } = req;
 
   if (url === ApiPath.GetAll) {
     const users = DataService.getAll();
-    res.writeHead(200, HttpContent.JSON);
-    res.write(JSON.stringify(users));
-    res.end();
+    HttpHelper.writeJSONResponse(res, 200, JSON.stringify(users));
   } else if (url?.startsWith(ApiPath.GetUser)) {
     const uuid = url.slice(ApiPath.GetUser.length);
     if (!isUuidValid(uuid)) {
-      res.writeHead(400, HttpContent.TEXT);
-      res.write(Message.ClientRequestDataError + ': ' + Message.WrongUUID);
-      res.end();
+      HttpHelper.writeTextResponse(res, 400, Message.WrongUUID);
       return;
     }
     const user = DataService.getRecord(uuid);
     if (user) {
-      res.writeHead(200, HttpContent.JSON);
-      res.write(JSON.stringify(user));
-      res.end();
+      HttpHelper.writeJSONResponse(res, 200, JSON.stringify(user));
     } else {
-      res.writeHead(404, HttpContent.TEXT);
-      res.write(Message.RecordNotExist);
-      res.end();
+      HttpHelper.writeTextResponse(res, 404, Message.RecordNotExist);
     }
-  } else pageNotFound(res);
+  } else {
+    HttpHelper.writePageNotFound(res);
+  }
 }
 
 function postRouter(req: IncomingMessage, res: ServerResponse<IncomingMessage>): void {
@@ -44,7 +38,7 @@ function postRouter(req: IncomingMessage, res: ServerResponse<IncomingMessage>):
   if (url === ApiPath.CreateUser) {
     processRequestBody(req, res, createUser);
   } else {
-    pageNotFound(res);
+    HttpHelper.writePageNotFound(res);
   }
 }
 
@@ -53,14 +47,12 @@ function putRouter(req: IncomingMessage, res: ServerResponse<IncomingMessage>): 
   if (url?.startsWith(ApiPath.UpdateUser)) {
     const uuid = url.slice(ApiPath.UpdateUser.length);
     if (!isUuidValid(uuid)) {
-      res.writeHead(400, HttpContent.TEXT);
-      res.write(Message.ClientRequestDataError + ': ' + Message.WrongUUID);
-      res.end();
+      HttpHelper.writeTextResponse(res, 400, Message.WrongUUID);
       return;
     }
     processRequestBody(req, res, updateUser);
   } else {
-    pageNotFound(res);
+    HttpHelper.writePageNotFound(res);
   }
 }
 
@@ -69,30 +61,18 @@ function deleteRouter(req: IncomingMessage, res: ServerResponse<IncomingMessage>
   if (url?.startsWith(ApiPath.DeleteUser)) {
     const uuid = url.slice(ApiPath.DeleteUser.length);
     if (!isUuidValid(uuid)) {
-      res.writeHead(400, HttpContent.TEXT);
-      res.write(Message.ClientRequestDataError + ': ' + Message.WrongUUID);
-      res.end();
+      HttpHelper.writeTextResponse(res, 400, Message.WrongUUID);
       return;
     }
     const isDeleted = webService.deleteUser(uuid);
     if (isDeleted) {
-      res.writeHead(204, HttpContent.TEXT);
-      res.write(Message.OK);
-      res.end();
+      HttpHelper.writeTextResponse(res, 204, Message.OK);
     } else {
-      res.writeHead(404, HttpContent.TEXT);
-      res.write(Message.RecordNotExist);
-      res.end();
+      HttpHelper.writeTextResponse(res, 404, Message.RecordNotExist);
     }
   } else {
-    pageNotFound(res);
+    HttpHelper.writePageNotFound(res);
   }
-}
-
-function pageNotFound(res: ServerResponse<IncomingMessage>): void {
-  res.writeHead(404, HttpContent.TEXT);
-  res.write(Message.PageNotFound);
-  res.end();
 }
 
 function processRequestBody(
@@ -112,16 +92,12 @@ function createUser(_: IncomingMessage, res: ServerResponse<IncomingMessage>, bo
   try {
     const { username, age, hobbies } = JSON.parse(body) as User;
     if (!username || !age || !hobbies) {
-      res.writeHead(400, HttpContent.TEXT);
-      res.write(Message.ClientRequestDataError + ': ' + Message.WrongUUID);
-      res.end();
+      HttpHelper.writeTextResponse(res, 400, Message.WrongUUID);
       return;
     }
 
     const user = webService.createUser({ username, age, hobbies });
-    res.writeHead(201, HttpContent.JSON);
-    res.write(JSON.stringify(user));
-    res.end();
+    HttpHelper.writeJSONResponse(res, 201, JSON.stringify(user));
   } catch (error) {
     const message = error instanceof Error ? error.message : '';
     throw new ServerError(message);
@@ -133,21 +109,15 @@ function updateUser(req: IncomingMessage, res: ServerResponse<IncomingMessage>, 
     const id = req.url?.slice(ApiPath.UpdateUser.length);
     const { username, age, hobbies } = JSON.parse(body) as User;
     if (!username || !age || !hobbies) {
-      res.writeHead(400, HttpContent.TEXT);
-      res.write(Message.ClientRequestDataError);
-      res.end();
+      HttpHelper.writeTextResponse(res, 400, Message.ClientRequestDataError);
       return;
     }
 
     const user = webService.updateUser({ id, username, age, hobbies });
     if (user) {
-      res.writeHead(200, HttpContent.JSON);
-      res.write(JSON.stringify(user));
-      res.end();
+      HttpHelper.writeJSONResponse(res, 200, JSON.stringify(user));
     } else {
-      res.writeHead(404, HttpContent.TEXT);
-      res.write(Message.RecordNotExist);
-      res.end();
+      HttpHelper.writeTextResponse(res, 404, Message.RecordNotExist);
     }
   } catch (error) {
     const message = error instanceof Error ? error.message : '';
@@ -155,4 +125,4 @@ function updateUser(req: IncomingMessage, res: ServerResponse<IncomingMessage>, 
   }
 }
 
-export { getRouter, postRouter, putRouter, deleteRouter, pageNotFound };
+export { getRouter, postRouter, putRouter, deleteRouter };

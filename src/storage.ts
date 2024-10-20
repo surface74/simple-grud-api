@@ -1,5 +1,5 @@
 import { ServerError } from './error.js';
-import User from './user-types.js';
+import User from './user.types.js';
 import { v4 as getUUID } from 'uuid';
 
 export default class Storage {

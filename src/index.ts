@@ -1,8 +1,9 @@
 import http, { IncomingMessage, ServerResponse } from 'node:http';
 import dotenv from 'dotenv';
-import { getRouter, postRouter, putRouter, deleteRouter, pageNotFound } from './router.js';
-import { HttpContent } from './http-content.types.js';
+import { getRouter, postRouter, putRouter, deleteRouter } from './router.js';
+import { HttpHelper } from './http-helper.js';
 import { ClientError } from './error.js';
+import { Message } from './message.js';
 
 dotenv.config();
 const port = process.env.PORT ?? 8080;
@@ -27,17 +28,15 @@ server.on('request', (req: IncomingMessage, res: ServerResponse<IncomingMessage>
         deleteRouter(req, res);
         break;
       default:
-        pageNotFound(res);
+        HttpHelper.writePageNotFound(res);
         break;
     }
   } catch (error) {
-    const statusCode = res.statusCode || error instanceof ClientError ? 400 : 500;
-    res.writeHead(statusCode, HttpContent.TEXT);
     const message = error instanceof Error ? error.message : '';
     console.log(message);
-    res.write(message);
-    res.end();
+    const statusCode = res.statusCode || error instanceof ClientError ? 400 : 500;
+    HttpHelper.writeTextResponse(res, statusCode, message);
   }
 });
 
-server.listen(port, (): void => console.log(`server started on port ${port}`));
+server.listen(port, (): void => console.log(`${Message.ServerStarted} ${port}`));
