@@ -15,4 +15,12 @@ function createUser(userData: User): User {
   return storage.create(userData);
 }
 
-export default { getAll, createUser, getRecord };
+function updateUser(userData: User): User | undefined {
+  return storage.updateRecord(userData);
+}
+
+function deleteUser(id: string): boolean {
+  return storage.deleteRecord(id);
+}
+
+export default { getAll, createUser, getRecord, updateUser, deleteUser };

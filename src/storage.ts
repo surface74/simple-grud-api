@@ -27,4 +27,22 @@ export default class Storage {
   public getRecord(uuid: string): User | undefined {
     return this.records.find((user) => user.id === uuid);
   }
+
+  public updateRecord(userData: User): User | undefined {
+    const user = this.records.find((user: User): boolean => user.id === userData.id);
+    if (!user) return;
+    user.username = userData.username;
+    user.age = userData.age;
+    user.hobbies = userData.hobbies;
+    return user;
+  }
+
+  public deleteRecord(uuid: string): boolean {
+    const index = this.records.findIndex((user: User): boolean => user.id === uuid);
+    if (index === -1) {
+      return false;
+    }
+    this.records.splice(index, 1);
+    return true;
+  }
 }

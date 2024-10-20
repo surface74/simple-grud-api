@@ -11,7 +11,7 @@ const server = new http.Server();
 
 server.on('request', (req: IncomingMessage, res: ServerResponse<IncomingMessage>): void => {
   const { method } = req;
-  // res.writeHead(200, { 'Content-Type': 'text/html; charset=utf-8' });
+
   try {
     switch (method) {
       case 'GET':

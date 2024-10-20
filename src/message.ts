@@ -5,5 +5,6 @@ export enum Message {
   WrongUUID = 'Wrong record UUID',
   ClientRequestDataError = 'Error in request`s data',
   NotImplementedError = 'Not implemented',
-  RecordNotExist = 'Record doesn`t exists',
+  RecordNotExist = 'Record doesn`t exist',
+  OK = 'OK',
 }
