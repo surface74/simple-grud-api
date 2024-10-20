@@ -1,10 +1,10 @@
-import User from './user.types.js';
-import Storage from './storage.js';
+import User from '../user.types.js';
+import Storage from '../storage.js';
 import { validate as isUuidValid } from 'uuid';
 
 const storage = new Storage();
 
-describe('Storage', () => {
+describe('Append record', () => {
   test('should create record', () => {
     const userData: User = {
       username: 'Elena',

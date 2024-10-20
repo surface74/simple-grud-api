@@ -5,14 +5,15 @@
   "main": "index.js",
   "type": "module",
   "scripts": {
-    "start:dev": "node --inspect --no-warnings=ExperimentalWarning --loader ts-node/esm src/index.ts",
-    "start:auto": "npx nodemon",
+    "start:dev": "node --no-warnings=ExperimentalWarning --loader ts-node/esm src/index.ts",
     "start:prod": "npm run build && node build/index.js",
+    "start:debug": "node --inspect --no-warnings=ExperimentalWarning --loader ts-node/esm src/index.ts",
+    "start:auto": "npx nodemon",
     "build": "tsc",
     "lint": "eslint ./src/**/*.ts",
     "lint:fix": "eslint ./src/**/*.ts --fix",
     "test": "jest --silent",
-    "test:verbose": "jest"
+    "test:verbose": "jest --detectOpenHandles"
   },
   "author": "Siarhei Muliarenka",
   "license": "ISC",
