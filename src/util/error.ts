@@ -1,4 +1,4 @@
-import { Message } from './message.js';
+import { Message } from '../types/message.types.js';
 
 export class ServerError extends Error {
   constructor(message?: string) {

@@ -1,51 +1,46 @@
-import http, { IncomingMessage } from 'node:http';
-// import dotenv from 'dotenv';
-// import { startServer, closeServer } from '../app.js';
+import dotenv from 'dotenv';
+import { startServer, closeServer } from '../app.js';
+import { AddUser, CheckResponse, DeleteUser, GetAll } from './test-lib.js';
+import User from '../types/user.types.js';
 
-// dotenv.config();
-// const port = process.env.PORT || '8080';
+dotenv.config();
+const port = Number.parseInt(process.env.PORT || '8080');
 
-// startServer(Number.parseInt(port));
+startServer(port);
 
-// afterAll((): void => closeServer());
+afterAll((): void => closeServer());
 
 describe('Server API', () => {
-  test('get all feature', (done) => {
-    const options = {
-      hostname: 'localhost',
-      port: 3000,
-      path: '/api/users',
-      angent: false,
-      method: 'Get',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    };
+  test('check response', async () => {
+    await expect(CheckResponse(port)).resolves.toBe('200');
+    const data = await GetAll(port);
+    const json: Array<User> = JSON.parse(data) as Array<User>;
+    expect(json).toHaveLength(0);
+  });
 
-    const req = http.request(options, (res: IncomingMessage): void => {
-      // const { statusCode } = res;
-      // console.log(`STATUS: ${res.statusCode}`);
-      // console.log(`HEADERS: ${JSON.stringify(res.headers)}`);
-      // res.setEncoding('utf8');
-      let body = '';
-      res.on('data', (chunk: Buffer): string => (body += chunk.toString()));
+  test('check POST', async () => {
+    await expect(AddUser(port)).resolves.toBe('201');
+  });
 
-      res.on('end', () => {
-        expect(body).toBeInstanceOf(Array);
-        done();
-      });
-    });
+  test('check GET ALL', async () => {
+    await expect(AddUser(port)).resolves.toBe('201');
+    const data = await GetAll(port);
+    const json: Array<User> = JSON.parse(data) as Array<User>;
+    expect(json).toHaveLength(2);
+    expect(json[0]).toHaveProperty('id');
+    expect(json[0]).toHaveProperty('username');
+    expect(json[0]).toHaveProperty('age');
+  });
 
-    req.on('error', (e: Error): void => {
-      done(new Error(e.message));
-    });
+  test('check DELETE', async () => {
+    const data = await GetAll(port);
+    const json: Array<User> = JSON.parse(data) as Array<User>;
+    const userCounter = json.length;
+    const { id } = json[0];
 
-    req.write('');
-    req.end();
+    await DeleteUser(port, id);
+    const data2 = await GetAll(port);
+    const json2: Array<User> = JSON.parse(data2) as Array<User>;
+    expect(json2).toHaveLength(userCounter - 1);
   });
 });
-
-// const startAgent = () => {
-//   const httpAgent = new http.Agent();
-
-// }

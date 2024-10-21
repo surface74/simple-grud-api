@@ -2,12 +2,12 @@ import { IncomingMessage, ServerResponse } from 'node:http';
 
 import { validate as isUuidValid } from 'uuid';
 
-import { ApiPath } from './api-path.types.js';
-import { Message } from './message.js';
-import { ServerError } from './error.js';
-import User from './user.types.js';
+import { ApiPath } from './types/api-path.types.js';
+import { Message } from './types/message.types.js';
+import { ServerError } from './util/error.js';
+import User from './types/user.types.js';
 import webService from './web-service.js';
-import { HttpHelper } from './http-helper.js';
+import { HttpHelper } from './util/http-helper.js';
 
 function getRouter(req: IncomingMessage, res: ServerResponse<IncomingMessage>): void {
   const { url } = req;

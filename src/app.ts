@@ -1,8 +1,8 @@
 import http, { IncomingMessage, ServerResponse } from 'node:http';
 import { getRouter, postRouter, putRouter, deleteRouter } from './router.js';
-import { HttpHelper } from './http-helper.js';
-import { ClientError } from './error.js';
-import { Message } from './message.js';
+import { HttpHelper } from './util/http-helper.js';
+import { ClientError } from './util/error.js';
+import { Message } from './types/message.types.js';
 import { Duplex } from 'node:stream';
 import { EOL } from 'node:os';
 
@@ -52,9 +52,6 @@ const startServer = (port: number) => {
 
   server.listen(port, (): void => console.log(`${Message.ServerStarted} ${port}`));
 
-  process.on('SIGTERM', () => {
-    server.close();
-  });
   process.on('SIGINT', () => {
     server.close();
   });

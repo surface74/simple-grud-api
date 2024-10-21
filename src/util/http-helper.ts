@@ -1,5 +1,5 @@
 import { IncomingMessage, ServerResponse } from 'node:http';
-import { Message } from './message.js';
+import { Message } from '../types/message.types.js';
 
 export const HttpHelper = {
   TEXT: { 'Content-Type': 'text/html; charset=utf-8' },

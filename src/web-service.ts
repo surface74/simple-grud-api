@@ -1,4 +1,4 @@
-import User from './user.types.js';
+import User from './types/user.types.js';
 import Storage from './storage.js';
 
 const storage = new Storage();
