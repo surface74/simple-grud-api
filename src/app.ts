@@ -1,16 +1,15 @@
 import http, { IncomingMessage, ServerResponse } from 'node:http';
-import dotenv from 'dotenv';
 import { getRouter, postRouter, putRouter, deleteRouter } from './router.js';
 import { HttpHelper } from './http-helper.js';
 import { ClientError } from './error.js';
 import { Message } from './message.js';
 import { Duplex } from 'node:stream';
+import { EOL } from 'node:os';
 
-const app = () => {
-  dotenv.config();
-  const port = process.env.PORT ?? 8080;
+let server: http.Server;
 
-  const server = new http.Server();
+const startServer = (port: number) => {
+  server = new http.Server();
 
   server.on('request', (req: IncomingMessage, res: ServerResponse<IncomingMessage>): void => {
     const { method } = req;
@@ -41,15 +40,14 @@ const app = () => {
     }
   });
 
-  server.on('close', (): never => {
+  server.on('close', () => {
     console.log(`Server on ${port} closed`);
     server.closeAllConnections();
     server.closeIdleConnections();
-    process.exit(0);
   });
 
   server.on('clientError', (error, socket: Duplex): void => {
-    socket.end('HTTP/1.1 400 Bad Request\r\n\r\n');
+    socket.end(`HTTP/1.1 400 Bad Request${EOL}${EOL}${error instanceof Error ? error.message + EOL : ''}`);
   });
 
   server.listen(port, (): void => console.log(`${Message.ServerStarted} ${port}`));
@@ -62,4 +60,8 @@ const app = () => {
   });
 };
 
-export default app;
+const closeServer = () => {
+  server.close();
+};
+
+export { startServer, closeServer };

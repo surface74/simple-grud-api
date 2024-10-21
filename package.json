@@ -13,7 +13,8 @@
     "lint": "eslint ./src/**/*.ts",
     "lint:fix": "eslint ./src/**/*.ts --fix",
     "test": "jest --silent",
-    "test:verbose": "jest --detectOpenHandles"
+    "test:verbose": "jest --detectOpenHandles",
+    "client": "node --no-warnings=ExperimentalWarning --loader ts-node/esm src/test/client.ts"
   },
   "author": "Siarhei Muliarenka",
   "license": "ISC",

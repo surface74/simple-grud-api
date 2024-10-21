@@ -9,7 +9,7 @@ export default class Storage {
     this.records = new Array<User>();
   }
 
-  public create(newUser: User): User {
+  public createRecord(newUser: User): User {
     try {
       const user: User = { ...newUser, id: getUUID() };
       this.records.push(user);
@@ -20,8 +20,15 @@ export default class Storage {
     }
   }
 
-  public getAll(): User[] {
-    return [...this.records];
+  public async getAll(): Promise<User[]> {
+    return new Promise((resolve, reject) => {
+      try {
+        resolve([...this.records]);
+      } catch (error) {
+        const message = error instanceof Error ? error.message : '';
+        reject(new ServerError(message));
+      }
+    });
   }
 
   public getRecord(uuid: string): User | undefined {

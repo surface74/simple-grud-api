@@ -13,8 +13,12 @@ function getRouter(req: IncomingMessage, res: ServerResponse<IncomingMessage>): 
   const { url } = req;
 
   if (url === ApiPath.GetAll) {
-    const users = webService.getAll();
-    HttpHelper.writeJSONResponse(res, 200, JSON.stringify(users));
+    webService
+      .getAll()
+      .then((users: User[]): void => HttpHelper.writeJSONResponse(res, 200, JSON.stringify(users)))
+      .catch((): never => {
+        throw new ServerError();
+      });
   } else if (url?.startsWith(ApiPath.GetUser)) {
     const uuid = url.slice(ApiPath.GetUser.length);
     if (!isUuidValid(uuid)) {

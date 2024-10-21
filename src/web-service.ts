@@ -7,12 +7,12 @@ function getRecord(uuid: string): User | undefined {
   return storage.getRecord(uuid);
 }
 
-function getAll(): User[] {
-  return storage.getAll();
+async function getAll(): Promise<User[]> {
+  return await storage.getAll();
 }
 
 function createUser(userData: User): User {
-  return storage.create(userData);
+  return storage.createRecord(userData);
 }
 
 function updateUser(userData: User): User | undefined {

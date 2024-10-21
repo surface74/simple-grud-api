@@ -1,3 +1,8 @@
-import app from './app.js';
+import dotenv from 'dotenv';
 
-app();
+import { startServer } from './app.js';
+
+dotenv.config();
+const port = process.env.PORT || '8080';
+
+startServer(Number.parseInt(port));

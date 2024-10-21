@@ -21,10 +21,12 @@
   },
   "include": [
     "src/**/*.ts",
-    "src/test/api.test.ts"
+    "src/test/client.js",
+    "src/test/storage.test.t_",
   ],
   "exclude": [
-    "node_modules"
+    "node_modules",
+    // "src/test/*.test.ts"
   ],
   "lib": [
     "esnext"

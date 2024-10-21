@@ -29,6 +29,6 @@ export default [
     },
   },
   {
-    ignores: ["eslint.config.js", "jest.config.js"]
+    ignores: ["eslint.config.js", "jest.config.js", "test/"]
   },
 ];

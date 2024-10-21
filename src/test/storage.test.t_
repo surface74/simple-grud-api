@@ -12,7 +12,7 @@ describe('Append record', () => {
       hobbies: ['ski', 'bike', 'movies'],
     };
     // const recordCount = storage.getAll().length;
-    const user = storage.create(userData);
+    const user = storage.createRecord(userData);
 
     expect(isUuidValid(user.id || '')).toBe(true);
   });
