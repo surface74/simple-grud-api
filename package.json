@@ -6,10 +6,10 @@
   "type": "module",
   "scripts": {
     "start:dev": "node --no-warnings=ExperimentalWarning --loader ts-node/esm src/index.ts",
-    "start:prod": "npm run build && node build/index.js",
+    "start:prod": "tsc && node build/index.js",
     "start:debug": "node --inspect --no-warnings=ExperimentalWarning --loader ts-node/esm src/index.ts",
     "start:auto": "npx nodemon",
-    "build": "tsc",
+    "build": "tsc && webpack",
     "lint": "eslint ./src/**/*.ts",
     "lint:fix": "eslint ./src/**/*.ts --fix",
     "test": "jest --silent"
@@ -30,7 +30,9 @@
     "ts-jest": "^29.2.5",
     "ts-node": "^10.9.2",
     "typescript": "^5.6.3",
-    "typescript-eslint": "^8.10.0"
+    "typescript-eslint": "^8.10.0",
+    "webpack": "^5.95.0",
+    "webpack-cli": "^5.1.4"
   },
   "dependencies": {
     "dotenv": "^16.4.5",

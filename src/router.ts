@@ -1,6 +1,6 @@
 import { IncomingMessage, ServerResponse } from 'node:http';
 
-import { validate as isUuidValid } from 'uuid';
+import { validate as isUuidValid } from './util/uuid2.js';
 
 import { ApiPath } from './types/api-path.types.js';
 import { Message } from './types/message.types.js';
